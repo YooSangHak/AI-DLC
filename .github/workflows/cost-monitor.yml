@@ -1,0 +1,103 @@
+# FR-8.7: Kill-switch + runaway cost 모니터링 (월간 cron)
+name: AI Cost Monitor
+
+on:
+  schedule:
+    - cron: "0 9 1 * *"   # 매월 1일 09:00 UTC (월간 리포트)
+    - cron: "0 */6 * * *"  # 6시간마다 일간 체크
+  workflow_dispatch:
+    inputs:
+      force_report:
+        description: "강제 리포트 생성"
+        type: boolean
+        default: false
+
+jobs:
+  cost-check:
+    name: "FR-8.7 AI Cost Guard"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "[FR-8.7] Anthropic API 비용 조회"
+        id: cost
+        run: |
+          # Anthropic Usage API (2026 기준)
+          RESPONSE=$(curl -sf \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            "https://api.anthropic.com/v1/organizations/usage?period=current_month" \
+            || echo '{"total_cost_usd": 0}')
+
+          TOTAL=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('total_cost_usd', 0))")
+          echo "monthly_cost=${TOTAL}" >> $GITHUB_OUTPUT
+          echo "Monthly AI cost: \$${TOTAL}"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        continue-on-error: true
+
+      - name: "[FR-8.7] 월 한도 초과 확인"
+        run: |
+          MONTHLY_LIMIT="${{ vars.AIDD_MONTHLY_COST_LIMIT_USD || '500' }}"
+          CURRENT="${{ steps.cost.outputs.monthly_cost || '0' }}"
+
+          python3 << 'EOF'
+          import sys
+          current = float("${{ steps.cost.outputs.monthly_cost || '0' }}")
+          limit = float("${{ vars.AIDD_MONTHLY_COST_LIMIT_USD || '500' }}")
+          ratio = current / limit if limit > 0 else 0
+
+          print(f"Monthly cost: ${current:.2f} / ${limit:.2f} ({ratio*100:.1f}%)")
+
+          if ratio >= 1.0:
+              print(f"❌ 월 한도 초과! Kill-switch 활성화 필요.")
+              sys.exit(1)
+          elif ratio >= 0.8:
+              print(f"⚠️  월 한도 80% 도달. 사용량 검토 필요.")
+          elif ratio >= 0.5:
+              print(f"ℹ️  월 한도 50% 사용 중.")
+          else:
+              print(f"✅ 비용 정상 범위.")
+          EOF
+
+      - name: "[FR-8.7] Slack 알림 (한도 80% 이상)"
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 AIDD AI 비용 경고\n월간 비용: ${{ steps.cost.outputs.monthly_cost }}USD\n한도: ${{ vars.AIDD_MONTHLY_COST_LIMIT_USD }}USD\n즉시 확인 필요."
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true
+
+  # 월간 비용 리포트 생성
+  monthly-report:
+    name: "FR-8.7 Monthly Cost Report"
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 9 1 * *' || github.event.inputs.force_report == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "월간 리포트 생성"
+        run: |
+          MONTH=$(date +%Y-%m)
+          REPORT_FILE=".aidd/events/cost-report-${MONTH}.md"
+          mkdir -p .aidd/events
+
+          cat > "$REPORT_FILE" << EOF
+          # AI 비용 리포트 — ${MONTH}
+
+          생성일: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+          월 한도: \${{ vars.AIDD_MONTHLY_COST_LIMIT_USD || '500' }}
+
+          ## 상세
+          - 세션별 비용: .aidd/events/cost-*.jsonl 참조
+          - 모델별 사용: Anthropic Console 확인
+
+          ## 조치
+          - 한도 초과 시: AIDD_KILL_SWITCH=1 또는 .aidd/KILL_SWITCH 파일 생성
+          EOF
+
+          echo "리포트 생성: $REPORT_FILE"

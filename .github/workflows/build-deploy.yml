@@ -1,0 +1,164 @@
+# FR-8.6: 배포 admission — 서명·SBOM·canary
+# Triggered by: main branch merge or manual dispatch
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: "배포 환경 (canary | production)"
+        required: true
+        default: "canary"
+        type: choice
+        options: [canary, production]
+
+env:
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  IMAGE_NAME: ${{ github.event.repository.name }}
+
+jobs:
+  # --- 빌드 + 서명 + SBOM ---
+  build:
+    name: "FR-8.6 Build + Sign + SBOM"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write  # Sigstore OIDC
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+      image_digest: ${{ steps.push.outputs.digest }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-
+            type=semver,pattern={{version}}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        id: push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Install Cosign (Sigstore)
+        uses: sigstore/cosign-installer@v3
+
+      - name: "[FR-8.6] Sigstore 서명"
+        run: |
+          cosign sign --yes \
+            "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.push.outputs.digest }}"
+
+      - name: Install Syft (SBOM)
+        uses: anchore/sbom-action/download-syft@v0
+
+      - name: "[FR-8.6] SBOM 생성"
+        uses: anchore/sbom-action@v0
+        with:
+          image: "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.push.outputs.digest }}"
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+          upload-artifact: true
+
+  # --- Canary 배포 (10% 트래픽) ---
+  deploy-canary:
+    name: "FR-8.6 Canary Deploy (10%)"
+    needs: build
+    runs-on: ubuntu-latest
+    environment: canary
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+
+      - name: "[FR-8.6] Canary 배포"
+        run: |
+          helm upgrade ${{ env.IMAGE_NAME }} ./helm/${{ env.IMAGE_NAME }} \
+            --install \
+            --namespace production \
+            --set image.tag=sha-${{ github.sha }} \
+            --set canary.weight=10 \
+            --wait --timeout=5m
+
+      - name: "10분 모니터링 (헬스체크)"
+        run: |
+          echo "Canary 배포 후 10분 모니터링..."
+          for i in $(seq 1 10); do
+            sleep 60
+            STATUS=$(curl -sf "${SERVICE_HEALTH_URL}/health" -o /dev/null -w "%{http_code}" || echo "000")
+            echo "[$i/10] Health: $STATUS"
+            if [[ "$STATUS" != "200" ]]; then
+              echo "❌ 헬스체크 실패 ($STATUS) — 롤백 시작"
+              helm rollback ${{ env.IMAGE_NAME }} 0 --namespace production
+              exit 1
+            fi
+          done
+          echo "✅ Canary 10분 모니터링 통과"
+        env:
+          SERVICE_HEALTH_URL: ${{ secrets.SERVICE_HEALTH_URL }}
+
+  # --- 프로덕션 배포 (L3 HITL: 2인+SRE 승인) ---
+  deploy-production:
+    name: "FR-8.6 Production Deploy (L3 HITL)"
+    needs: deploy-canary
+    runs-on: ubuntu-latest
+    environment: production  # GitHub Environment protection rule: 2인 승인 필수
+    if: github.event.inputs.target_env == 'production' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup ArgoCD CLI
+        run: |
+          curl -sSL -o /usr/local/bin/argocd \
+            https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+
+      - name: "[FR-8.6] ArgoCD 프로덕션 동기화"
+        run: |
+          argocd login "$ARGOCD_SERVER" \
+            --username "$ARGOCD_USERNAME" \
+            --password "$ARGOCD_PASSWORD" \
+            --insecure
+          argocd app sync "${{ env.IMAGE_NAME }}" \
+            --revision sha-${{ github.sha }} \
+            --prune
+          argocd app wait "${{ env.IMAGE_NAME }}" --health
+        env:
+          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+          ARGOCD_USERNAME: ${{ secrets.ARGOCD_USERNAME }}
+          ARGOCD_PASSWORD: ${{ secrets.ARGOCD_PASSWORD }}
+
+      - name: "트래픽 100% 전환 확인"
+        run: |
+          helm upgrade ${{ env.IMAGE_NAME }} ./helm/${{ env.IMAGE_NAME }} \
+            --namespace production \
+            --set canary.weight=100 \
+            --wait --timeout=5m
+
+      - name: "GitHub Release 생성"
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.sha }}
+          name: "Release ${{ github.sha }}"
+          body: "자동 배포 완료. SBOM 첨부."
+          files: sbom.cdx.json

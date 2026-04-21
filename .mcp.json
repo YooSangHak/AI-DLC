@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "."],
+      "description": "로컬 git 저장소 조작 — log, diff, blame, status"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub PR·Issue·Release 조작"
+    },
+    "jira": {
+      "command": "npx",
+      "args": ["-y", "@atlassian/mcp-jira"],
+      "env": {
+        "JIRA_HOST": "${JIRA_HOST}",
+        "JIRA_EMAIL": "${JIRA_EMAIL}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      },
+      "description": "Jira 티켓 조회·상태 변경 — Phase 0 입력 모드 감지에서 사용"
+    },
+    "confluence": {
+      "command": "npx",
+      "args": ["-y", "@atlassian/mcp-confluence"],
+      "env": {
+        "CONFLUENCE_HOST": "${CONFLUENCE_HOST}",
+        "CONFLUENCE_TOKEN": "${CONFLUENCE_TOKEN}"
+      },
+      "description": "Confluence 페이지 조회 — Phase 0 URL 모드, 환각 방지 문서 참조"
+    }
+  },
+  "_deferred": {
+    "mcp-docs": "사내 문서 MCP — S005 결과에 따라 6월+ 재검토 (인프라팀 지원 필요)"
+  }
+}

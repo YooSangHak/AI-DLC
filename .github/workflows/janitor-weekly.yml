@@ -1,0 +1,145 @@
+# AIDD-S047: agent-janitor 주간 자동 감사
+# 매주 월요일 03:00 KST (UTC 일요일 18:00)
+name: AIDD Janitor Weekly Audit
+
+on:
+  schedule:
+    - cron: "0 18 * * 0"
+  workflow_dispatch:
+    inputs:
+      audit_type:
+        description: "감사 유형 (all|docs|rules|dead)"
+        default: "all"
+        type: choice
+        options: [all, docs, rules, dead]
+
+jobs:
+  janitor-audit:
+    name: "🧹 Janitor 주간 감사"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "① docs ↔ src 정합성"
+        id: docs-check
+        run: |
+          ISSUES=""
+
+          # CLAUDE.md Stack vs pyproject.toml
+          if [[ -f "pyproject.toml" && -f "CLAUDE.md" ]]; then
+            PY_VER=$(grep -oP 'python_requires\s*=\s*"[^"]+"' pyproject.toml | grep -oP '\d+\.\d+' | head -1)
+            CLAUDE_PY=$(grep -oP 'Python \K\d+\.\d+' CLAUDE.md | head -1)
+            if [[ -n "$PY_VER" && -n "$CLAUDE_PY" && "$PY_VER" != "$CLAUDE_PY" ]]; then
+              ISSUES="${ISSUES}\n- ⚠️ Python 버전 불일치: CLAUDE.md(${CLAUDE_PY}) vs pyproject.toml(${PY_VER})"
+            fi
+          fi
+
+          # ADR Accepted 컴포넌트 src 존재 확인 (간단 체크)
+          if [[ -d "docs/adr" ]]; then
+            ACCEPTED=$(grep -rl "Status: Accepted" docs/adr/ 2>/dev/null | wc -l)
+            echo "Accepted ADR: ${ACCEPTED}건"
+          fi
+
+          echo "DOCS_ISSUES<<EOF" >> $GITHUB_ENV
+          printf "%b" "${ISSUES:-✅ 불일치 없음}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: "② AI Usage Rules 위반 스캔"
+        id: rules-check
+        run: |
+          ISSUES=""
+
+          # 최근 7일 300 LOC 초과 커밋
+          git log --since="7 days ago" --stat --oneline | \
+            awk '/files? changed/{
+              split($0,a," "); total=0;
+              for(i in a) if(a[i]+0>0) total+=a[i];
+              if(total>300) print "⚠️ LOC 초과 커밋: " prev " (" total " LOC)"
+            } /^[a-f0-9]/{prev=$0}' \
+            >> /tmp/loc_issues.txt || true
+
+          if [[ -s "/tmp/loc_issues.txt" ]]; then
+            ISSUES=$(cat /tmp/loc_issues.txt)
+          fi
+
+          # Secret 패턴 간이 스캔
+          SECRET_HITS=$(grep -rn \
+            -E "(api[_-]?key|api[_-]?token|secret)\s*=\s*['\"][^'\"]{8,}" \
+            src/ 2>/dev/null | grep -v "#\|test\|mock" | wc -l || echo 0)
+          if [[ "$SECRET_HITS" -gt 0 ]]; then
+            ISSUES="${ISSUES}\n- ❌ 비밀 패턴 ${SECRET_HITS}건 발견 — 즉시 확인 필요"
+          fi
+
+          echo "RULES_ISSUES<<EOF" >> $GITHUB_ENV
+          printf "%b" "${ISSUES:-✅ 위반 없음}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: "③ Dead code 감지"
+        id: dead-check
+        run: |
+          ISSUES=""
+
+          # 30일 이상 미사용 원격 브랜치
+          OLD_BRANCHES=$(git for-each-ref \
+            --sort=committerdate refs/remotes/ \
+            --format='%(committerdate:short) %(refname:short)' \
+            | awk -v cutoff="$(date -d '30 days ago' +%Y-%m-%d 2>/dev/null || date -v-30d +%Y-%m-%d 2>/dev/null || echo '2026-03-22')" \
+              '$1 < cutoff && $2 !~ /HEAD|main|master|develop/ {print "  - " $2 " (마지막: " $1 ")"}' \
+            | head -10)
+          if [[ -n "$OLD_BRANCHES" ]]; then
+            ISSUES="- ⚠️ 30일+ 미사용 브랜치:\n${OLD_BRANCHES}"
+          fi
+
+          echo "DEAD_ISSUES<<EOF" >> $GITHUB_ENV
+          printf "%b" "${ISSUES:-✅ dead code 없음}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: "리포트 생성"
+        id: report
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          WEEK=$(date +%Y-W%V)
+          REPORT_DIR="docs/janitor-reports"
+          mkdir -p "$REPORT_DIR"
+          REPORT_FILE="${REPORT_DIR}/${DATE}.md"
+
+          cat > "$REPORT_FILE" << EOF
+          # 🧹 Janitor Report (${WEEK})
+
+          생성: ${DATE} | 실행: GitHub Actions janitor-weekly
+
+          ## ① docs ↔ src 정합성
+          ${{ env.DOCS_ISSUES }}
+
+          ## ② AI Usage Rules 위반
+          ${{ env.RULES_ISSUES }}
+
+          ## ③ Dead code·미사용
+          ${{ env.DEAD_ISSUES }}
+
+          ## 다음 액션
+          위 ⚠️·❌ 항목은 L2 승인 후 처리.
+          EOF
+
+          echo "REPORT_FILE=${REPORT_FILE}" >> $GITHUB_OUTPUT
+          echo "WEEK=${WEEK}" >> $GITHUB_OUTPUT
+
+      - name: "이슈 발견 시 GitHub Issue 생성"
+        if: contains(env.DOCS_ISSUES, '⚠️') || contains(env.RULES_ISSUES, '❌') || contains(env.DEAD_ISSUES, '⚠️')
+        run: |
+          WEEK="${{ steps.report.outputs.WEEK }}"
+          gh issue create \
+            --title "🧹 [janitor] 주간 감사 이슈 발견 — ${WEEK}" \
+            --body "$(cat ${{ steps.report.outputs.REPORT_FILE }})" \
+            --label "janitor,needs-review"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "위반 없음 — 조용히 완료 (S048)"
+        if: "!contains(env.DOCS_ISSUES, '⚠️') && !contains(env.RULES_ISSUES, '❌') && !contains(env.DEAD_ISSUES, '⚠️')"
+        run: echo "✅ [janitor] 주간 감사 완료 — 위반 0건"

@@ -1,0 +1,63 @@
+# Agents — {project_name}
+
+> This file follows the [agents.md open standard](https://agents.md/).
+> Rules here apply to GitHub Copilot, Claude, and any AGENTS.md-aware tool.
+> Keep in sync with `CLAUDE.md` and `.cursorrules` (ADR-004).
+
+## Project Overview
+{architecture_summary}
+<!-- 아키텍처 한 문단 요약 -->
+
+## Stack
+- Language: {stack}
+  <!-- Python 3.13 | Java 21 | TypeScript 5.6 -->
+- Runtime: {runtime}
+- Build: {build_tool}
+
+## Coding Conventions
+- Code style: {code_style}
+  <!-- ruff (Py) | Checkstyle (Java) | biome (TS) -->
+- Commit: Conventional Commits (`feat|fix|refactor|test|docs|chore`)
+- Branch: {branch_strategy}
+  <!-- feature/<ticket>-<slug> | fix/<ticket>-<slug> -->
+- ADR: `docs/adr/<nnn>-<title>.md`
+
+## Testing Approach
+- Test-first (Red → Green → Refactor)
+- Python: pytest / TypeScript: Vitest / Java: JUnit 5
+- 단위 테스트 없이 PR 금지
+- 경계면 교차 테스트: agent-qa 담당
+
+## AI Usage Rules
+<!-- CLAUDE.md와 동일 — CI conformance.yml이 자동 검증 (AIDD-S019) -->
+1. **300 LOC 초과 diff 금지** — 초과 시 작업 분할 후 재시도
+2. **신규 의존성 공급망 체크** — `uv add` / `pnpm add` 전 Snyk 또는 수동 확인
+3. **비밀·PII 입력 금지** — API 키·비밀번호·개인정보 프롬프트 입력 불가
+4. **블랙리스트 명령 2인 확인** — `rm -rf` · DB drop · prod 직접 접근은 2인 승인
+5. **Spec 없는 기능 구현 금지** — Story·ADR·PRD 없으면 먼저 문서화
+
+## HITL Matrix
+<!-- CLAUDE.md와 동일 -->
+- **L1 (자동)**: 린트·단위 테스트·PR diff 요약 — AI 자율 진행
+- **L2 (인간 리뷰)**: Spec·ADR 작성 완료 / PR 최종 승인 — 담당자 확인 필수
+- **L3 (2인+SRE)**: 프로덕션 배포·DB 마이그레이션·스키마 변경 — {l3_approvers} 승인
+
+## Context Budget
+- 기본 세션: 200k tokens
+- 장기 리팩터링: Opus 4.7 (1M mode), 세션당 상한 600k
+- Legacy 이해 (PT-05): Gemini 2.5 Pro (2M)
+
+## Agents
+| Agent | 역할 | 진입 |
+|---|---|---|
+| `agent-analyst` 🔍 | 요구 분석 | `/agent-analyst` |
+| `agent-pm` 📋 | PRD·Story | `/agent-pm` |
+| `agent-architect` 🏗️ | ADR·Design | `/agent-architect` |
+| `agent-dev` 💻 | 구현 | `/agent-dev` |
+| `agent-qa` 🧪 | 테스트·경계면 | `/agent-qa` |
+| `agent-reviewer` 🔎 | PR 리뷰 | `/agent-reviewer` |
+| `agent-deployer` 🚀 | Release·Canary | `/agent-deployer` |
+| `agent-janitor` 🧹 | 주간 감사 | `/agent-janitor` |
+
+## Artifact Paths
+산출물 경로 규약: `docs/decisions/artifact-paths.md` 참조

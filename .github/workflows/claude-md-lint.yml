@@ -1,0 +1,30 @@
+# AIDD-S045: CLAUDE.md 60줄 원칙 CI 강제
+name: CLAUDE.md Lint
+
+on:
+  pull_request:
+    paths: ["CLAUDE.md", "**/CLAUDE.md"]
+  push:
+    branches: [main]
+    paths: ["CLAUDE.md"]
+
+jobs:
+  claude-md-60-line:
+    name: "CLAUDE.md ≤60줄 검증"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "60줄 초과 확인"
+        run: |
+          LIMIT=60
+          for f in $(find . -name "CLAUDE.md" -not -path "./.git/*"); do
+            LINES=$(wc -l < "$f")
+            echo "$f: ${LINES}줄"
+            if [[ "$LINES" -gt "$LIMIT" ]]; then
+              echo "❌ $f — ${LINES}줄 > ${LIMIT}줄 한도"
+              echo "   세부 규칙을 .claude/docs/*.md 로 분리하세요."
+              exit 1
+            fi
+          done
+          echo "✅ 모든 CLAUDE.md ≤${LIMIT}줄"

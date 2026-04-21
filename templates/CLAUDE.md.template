@@ -1,0 +1,59 @@
+# Project: {project_name}
+<!-- ≤60줄 유지. 세부 규칙 → .claude/docs/*.md. 실패 사례 시 AI Usage Rules 1줄 추가 -->
+
+## Stack
+- Language: {stack}
+- Runtime: {runtime}
+- Build: {build_tool}
+
+## Architecture
+- {architecture_summary}
+- 다이어그램: {diagram_path}
+- 상세: `.claude/docs/architecture.md`
+
+## Conventions
+- Code style: {code_style}
+- Commit: Conventional Commits (`feat|fix|refactor|test|docs|chore`)
+- Branch: `feature/<ticket>-<slug>` | `fix/<ticket>-<slug>`
+- ADR: `docs/adr/<nnn>-<title>.md`
+- 산출물 경로: `docs/decisions/artifact-paths.md`
+
+## AI Usage Rules
+1. **300 LOC 초과 diff 금지** — 초과 시 작업 분할 후 재시도
+2. **신규 의존성 공급망 체크** — `uv add` / `pnpm add` 전 Snyk 확인
+3. **비밀·PII 입력 금지** — API 키·비밀번호·개인정보 프롬프트 입력 불가
+4. **블랙리스트 명령 2인 확인** — `rm -rf` · DB drop · prod 직접 접근
+5. **Spec 없는 기능 구현 금지** — Story·ADR·PRD 없으면 먼저 문서화
+
+## Context Budget
+- 기본: 200k tokens | Opus 4.7 리팩터링: 1M (200K+ 세션 전 `/compact`)
+- Legacy 이해 (PT-05): Gemini 2.5 Pro (2M)
+
+## HITL Matrix
+- **L1 (자동)**: 린트·단위 테스트·PR diff 요약
+- **L2 (1인)**: Spec·ADR 승인 / PR 최종 Approve — {l2_approver}
+- **L3 (2인+SRE)**: 프로덕션 배포·DB 마이그레이션·블랙리스트 명령
+  - 승인자: {l3_approver_1}, {l3_approver_2} / SRE: {sre_name}
+
+## Agents
+| Agent | 역할 | 모델 |
+|---|---|---|
+| `analyst` 🔍 | 요구 분석 | Sonnet 4.6 |
+| `pm` 📋 | PRD·Story | Sonnet 4.6 |
+| `architect` 🏗️ | ADR·Design | Opus 4.7 |
+| `dev` 💻 | 구현 | Sonnet 4.6 |
+| `qa` 🧪 | 테스트·경계면 | Sonnet 4.6 |
+| `reviewer` 🔎 | PR 리뷰 | Haiku 4.5 |
+| `deployer` 🚀 | Release·Canary | Haiku 4.5 |
+| `janitor` 🧹 | 주간 감사 | Haiku 4.5 |
+
+## Skills & Prompts
+- Orchestrator: `/aidd-sdlc` · `/aidd-review`
+- Workflow: `/workflow-dev-story` · `/workflow-create-prd` · `/workflow-create-architecture`
+- Skill: `/commit-guardrail` · `/convention-py|ts` · `/review-checklist` · `/deploy-procedure`
+- Prompt: `.claude/prompts/` — PT-01·03·05·06·07·09·11
+
+## 변경 이력
+| 날짜 | 변경 | 대상 | 사유 |
+|---|---|---|---|
+| {YYYY-MM-DD} | 초기 구성 | 전체 | AIDD 환경 구축 (AIDD-S018) |

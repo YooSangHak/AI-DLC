@@ -1,0 +1,48 @@
+# Project: {프로젝트명}
+<!-- 60줄 이내 유지 (ADR-019). 세부 규칙은 .claude/docs/*.md 로 분리 -->
+
+## Stack
+- Language: {Python 3.13 | Java 21 | TypeScript 5.6}
+- Runtime: {uvicorn | Spring Boot 3 | Node 22}
+- Build: {uv | gradle | pnpm}
+
+## Architecture
+- {아키텍처 한 문단 요약}
+- 상세: `docs/adr/` + `../Workspace_AX_Enabling_Tech_AIDD/doc/AIDD_2026_05월_아키텍처.md`
+
+## Conventions
+- Code style: {ruff (Py) | Checkstyle (Java) | biome (TS)}
+- Commit: Conventional Commits
+- Branch: feature/<ticket>-<slug>
+- ADR: docs/adr/
+
+## AI Usage Rules
+1. 300 LOC 초과 diff 금지
+2. 신규 의존성: 공급망 체크
+3. 비밀·PII 입력 금지
+4. 블랙리스트 명령은 2인 확인
+5. Spec 없는 기능 구현 금지
+
+## Context Budget
+- 기본 세션: 200k tokens
+- 장기 리팩터링: Opus 4.7 (1M mode), 세션당 상한 600k
+- Legacy 이해 (PT-05): Gemini 2.5 Pro (2M)
+<!-- 200K 초과 세션에서 Opus 4.7 에이전트 호출 시 /compact 먼저 실행 -->
+
+## HITL
+- L1 (자동): 린트·단위 테스트·PR diff 요약
+- L2 (인간): Spec·ADR·PR 최종 승인
+- L3 (2인+SRE): 프로덕션 배포·파괴적 작업
+
+## Agents (8종)
+- `.claude/agents/` — analyst·pm·architect·dev·qa·reviewer·deployer·janitor
+
+## Skills & Prompts
+- `.claude/skills/` — L1 Orchestrator 2종·L2 Workflow 5종·L3 Agent 8종·L4 Skill 12종
+- `.claude/prompts/` — PT-01·03·05·06·07·09·11
+
+## 변경 이력
+| 날짜 | 변경 | 대상 | 사유 |
+|---|---|---|---|
+| {YYYY-MM-DD} | 초기 구성 | 전체 | AIDD 환경 구축 |
+<!-- 실패 사례 발생 시 규칙 1줄 추가 (ADR-019 증분 원칙) -->

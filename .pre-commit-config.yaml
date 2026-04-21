@@ -1,0 +1,61 @@
+# FR-8.3: 300 LOC / Secret 스캔
+# FR-8.4: 신규 의존성 공급망 체크
+# 설치: pip install pre-commit && pre-commit install
+
+repos:
+  # --- FR-8.1 / FR-8.3: 비밀·토큰 스캔 ---
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        name: "[FR-8.1] detect-secrets"
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: |
+          (?x)^(
+            \.secrets\.baseline|
+            .*\.lock$|
+            .*-lock\.json$
+          )$
+
+  # --- FR-8.3: 300 LOC 초과 차단 ---
+  - repo: local
+    hooks:
+      - id: check-diff-size
+        name: "[FR-8.3] 300 LOC 초과 차단"
+        language: script
+        entry: .claude/hooks/check-diff-size.sh
+        pass_filenames: false
+        always_run: true
+
+      - id: no-env-files
+        name: "[FR-8.1] .env 파일 커밋 차단"
+        language: pygrep
+        entry: ""
+        types: [text]
+        files: '\.env$|\.env\.'
+        exclude: '\.env\.example$|\.env\.template$'
+
+  # --- FR-8.4: 신규 의존성 공급망 체크 ---
+  - repo: local
+    hooks:
+      - id: check-new-deps-python
+        name: "[FR-8.4] Python 신규 의존성 Snyk 체크"
+        language: script
+        entry: .claude/hooks/check-deps.sh
+        files: '(pyproject\.toml|requirements.*\.txt)$'
+        pass_filenames: false
+
+      - id: check-new-deps-node
+        name: "[FR-8.4] Node 신규 의존성 Snyk 체크"
+        language: script
+        entry: .claude/hooks/check-deps.sh
+        files: '(package\.json|package-lock\.json|pnpm-lock\.yaml)$'
+        pass_filenames: false
+
+  # --- 공통: Conventional Commits 형식 ---
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.4.0
+    hooks:
+      - id: conventional-pre-commit
+        name: "[PR-Hygiene] Conventional Commits 형식"
+        stages: [commit-msg]
