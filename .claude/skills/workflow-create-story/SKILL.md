@@ -25,6 +25,7 @@ PRD·ADR을 기반으로 Epic을 Story로 분해하고 AC를 작성한다.
 | 3 | `steps/step-03-write-ac.md` | agent-pm |
 
 ## Output
+- `docs/stories/<ticket>-EPIC-<n>.md` (Epic 파일들)
 - `docs/stories/<ticket>-S*.md` (Story 파일들)
 
 ## HITL
