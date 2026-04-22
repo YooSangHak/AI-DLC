@@ -19,7 +19,7 @@ allowed-tools: Read Glob Bash(git *) Bash(mcp *)
 | 모드 | 예시 | 처리 |
 |---|---|---|
 | Jira | `/aidd-sdlc JIRA-123` | mcp-jira로 티켓 조회 |
-| 파일 | `/aidd-sdlc doc/epic-story/stories/AIDD-S020.md` | 파일 읽고 파싱 |
+| 파일 | `/aidd-sdlc docs/stories/AIDD-S020.md` | 파일 읽고 파싱 |
 | URL | `/aidd-sdlc https://confluence.../page` | WebFetch 또는 mcp-confluence |
 | 자유 | `/aidd-sdlc "로그인 기능 구현해줘"` | 요구 분석부터 시작 |
 
@@ -34,8 +34,8 @@ allowed-tools: Read Glob Bash(git *) Bash(mcp *)
    - `https?://` → URL 모드
    - 그 외 → 자유 입력 모드
 2. 파일 모드 유형별 분기:
-   - `stories/AIDD-S*.md` → Story (AC·Steps 추출)
-   - `docs/requirements/*.md` → Spec 단계부터
+   - `docs/stories/*.md` → Story (AC·Steps 추출)
+   - `docs/prd/*.md` → Spec 단계부터
    - `docs/adr/*.md` → Implement 단계부터
    - `docs/specs/*.md` → Design 단계부터
    - 기타 `.md` → 일반 입력

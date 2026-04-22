@@ -10,7 +10,7 @@
 PRD와 ADR을 읽고 Story 분해 기준을 파악한다.
 
 ## 작업
-1. `docs/requirements/<ticket>.md` PRD를 읽고 FR 목록을 파악한다
+1. `docs/prd/<ticket>.md` PRD를 읽고 FR 목록을 파악한다
 2. `docs/adr/*.md` ADR을 읽고 기술 제약을 파악한다
 3. 기존 Story가 있으면 중복 여부를 확인한다
 4. 분해 기준(INVEST 원칙)을 정의한다

@@ -10,7 +10,7 @@
 설계에 필요한 모든 컨텍스트(PRD·기존 ADR·기술 스택)를 수집한다.
 
 ## 작업
-1. PRD(`docs/requirements/<ticket>.md`)를 읽고 요구사항을 파악한다
+1. PRD(`docs/prd/<ticket>.md`)를 읽고 요구사항을 파악한다
 2. 기존 ADR(`docs/adr/*.md`)을 검토하여 기존 결정과 일관성을 확인한다
 3. CLAUDE.md의 Stack·Conventions를 숙지한다
 4. 설계 결정이 필요한 항목 목록을 작성한다

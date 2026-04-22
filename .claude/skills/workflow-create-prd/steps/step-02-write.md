@@ -12,7 +12,7 @@
    - 기능 요구사항 (FR)
    - 비기능 요구사항 (NFR)
    - 제약·가정
-4. `docs/requirements/<ticket>.md`에 저장한다
+4. `docs/prd/<ticket>.md`에 저장한다
 
 ## 완료 조건
 - [ ] template.md 전 섹션 작성

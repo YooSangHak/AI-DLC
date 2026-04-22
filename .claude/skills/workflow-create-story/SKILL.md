@@ -12,9 +12,9 @@ allowed-tools: Read Write Edit Grep Glob
 PRD·ADR을 기반으로 Epic을 Story로 분해하고 AC를 작성한다.
 
 ## Phase 0: 기존 자료 감사 (필수)
-1. `docs/requirements/<ticket>.md` (PRD) 존재 확인
+1. `docs/prd/<ticket>.md` (PRD) 존재 확인
 2. `docs/adr/*.md` 존재 확인
-3. `doc/epic-story/stories/*.md` 기존 Story 존재 확인
+3. `docs/stories/*.md` 기존 Story 존재 확인
 
 ## 단계 구성
 
@@ -25,7 +25,7 @@ PRD·ADR을 기반으로 Epic을 Story로 분해하고 AC를 작성한다.
 | 3 | `steps/step-03-write-ac.md` | agent-pm |
 
 ## Output
-- `doc/epic-story/stories/AIDD-S*.md` (Story 파일들)
+- `docs/stories/<ticket>-S*.md` (Story 파일들)
 
 ## HITL
 - L2: Story 분해 결과 사람 승인

@@ -30,5 +30,5 @@ explicit_ambiguities: []
 2. [ ] {구현 단계}
 
 ## References
-- PRD: `docs/requirements/{ticket}.md`
+- PRD: `docs/prd/{ticket}.md`
 - ADR: `docs/adr/*.md`

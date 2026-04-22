@@ -27,7 +27,7 @@ PRD·Spec을 기반으로 ADR과 설계 상세 문서를 5단계로 작성한다
 | 5 | `steps/step-05-validation.md` | agent-architect | — |
 
 ## Input
-- `docs/requirements/<ticket>.md` (PRD)
+- `docs/prd/<ticket>.md` (PRD)
 - `docs/specs/<feature>.md` (Spec, 있으면)
 
 ## Output
