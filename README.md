@@ -29,8 +29,9 @@ L1 Orchestrator  →  L2 Workflow  →  L3 Agent  →  L4 Skill  →  L5 Prompt
 ## 빠른 시작
 
 ```bash
-# 1. 이 리포를 코어 리포에 복사
-cp -r .claude/ .github/ templates/ docs/ .mcp.json .pre-commit-config.yaml <target-repo>/
+# 1. 프로젝트 생성 (git 히스토리 없이 클린하게 시작)
+npx degit YooSangHak/AI-DLC my-project
+cd my-project
 
 # 2. CLAUDE.md 리포별 변수 치환
 # {project_name}, {stack}, {runtime}, {branch_strategy}, {l3_approvers}
@@ -43,6 +44,8 @@ pre-commit install
 # 5. Claude Code에서 실행
 /aidd-sdlc JIRA-123
 ```
+
+> `npx degit`은 Node.js만 있으면 별도 설치 없이 사용 가능합니다.
 
 ---
 
@@ -107,26 +110,17 @@ pre-commit install
 ├── .pre-commit-config.yaml            # pre-commit 훅 (LOC·Secret·deps)
 │
 └── docs/
-    ├── adr/                           # 아키텍처 결정 기록
-    │   ├── ARCH-Q7-pm-role.md
-    │   ├── ARCH-Q8-customize-toml-timing.md
-    │   └── ARCH-Q9-workflow-step-definitions.md
-    ├── decisions/
-    │   └── artifact-paths.md          # 단계별 산출물 경로 규약
-    ├── governance/
-    │   ├── hitl-matrix.md             # HITL L1/L2/L3 정책
-    │   ├── mcp-setup.md               # MCP 연동 가이드
-    │   ├── evolution-policy.md        # 하네스 진화 메커니즘
-    │   ├── workspace-event-schema.md  # 이벤트 스키마 v2
-    │   ├── context-enrichment-metadata.md  # ADR-016 frontmatter 규약
-    │   ├── handoff-hitl-checklist.md  # H1~H7 핸드오프 체크리스트
-    │   └── output-policy.md           # 조용한 성공·시끄러운 실패
-    ├── prompts/
-    │   ├── README.md                  # PT 인덱스
-    │   └── _template.md               # PT 작성 템플릿
-    └── verification/
-        ├── W3-wiring-check.md         # 배선 검증 결과
-        └── W3-artifact-path.md        # 경로 검증 결과
+    ├── governance/                    # 운영 정책 (HITL·핸드오프·이벤트 스키마 등)
+    ├── prompts/                       # PT 인덱스 및 작성 템플릿
+    ├── requirements/                  # analyst 산출물 — 요구사항 정의서
+    ├── prd/                           # pm 산출물 — PRD
+    ├── adr/                           # architect 산출물 — ADR
+    ├── design/                        # architect 산출물 — 설계 상세
+    ├── specs/                         # architect 산출물 — Spec
+    ├── stories/                       # pm 산출물 — Epic·Story·AC
+    ├── test/                          # qa 산출물 — 테스트 케이스
+    ├── retrospective/                 # 분기 회고
+    └── janitor-reports/               # 주간 감사 리포트
 ```
 
 ---
