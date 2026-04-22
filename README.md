@@ -42,7 +42,7 @@ pre-commit install
 ### 4. Claude Code에서 실행
 ```bash
 claude
-/aidd-sdlc JIRA-123
+/aidd-sdlc-orchestrator "기능 설명"
 ```
 
 ---
@@ -51,7 +51,7 @@ claude
 
 | 명령 | 설명 |
 |---|---|
-| `/aidd-sdlc <입력>` | SDLC 메인 진입점 — Jira·파일·자유 입력 |
+| `/aidd-sdlc-orchestrator <입력>` | SDLC 메인 진입점 — 파일·자유 입력 |
 | `/workflow-create-prd` | PRD 작성 |
 | `/workflow-create-architecture` | ADR·설계 문서 작성 |
 | `/workflow-create-story` | Epic·Story 분해 |
