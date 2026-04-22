@@ -39,7 +39,8 @@ allowed-tools: Read Glob Bash(git *) Bash(mcp *)
    - `docs/adr/*.md` → Implement 단계부터
    - `docs/specs/*.md` → Design 단계부터
    - 기타 `.md` → 일반 입력
-3. `_workspace/` + 산출물 경로 규약(`docs/decisions/artifact-paths.md`) 기준 기존 파일 확인
+3. 산출물 경로 규약 기준 기존 파일 확인:
+   - `docs/requirements/` · `docs/prd/` · `docs/adr/` · `docs/design/` · `docs/specs/` · `docs/stories/`
 4. 실행 모드 결정 (초기·부분·이어서)
 5. **사용자에게 실행 계획 보고 → 승인 요청 (HITL L2)**
 
