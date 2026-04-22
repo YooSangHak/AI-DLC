@@ -1,7 +1,7 @@
 # workflow-create-story — DoD 체크리스트
 
 ## 산출물
-- [ ] Story 파일 전부 `doc/epic-story/stories/` 에 존재
+- [ ] Story 파일 전부 `docs/stories/` 에 존재
 
 ## 품질
 - [ ] INVEST 원칙 충족

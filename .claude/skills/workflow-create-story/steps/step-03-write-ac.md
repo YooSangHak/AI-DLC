@@ -8,7 +8,7 @@
 2. 각 Story에 대해:
    - Given-When-Then 형식으로 AC를 작성한다
    - Implementation Steps를 작성한다
-   - `doc/epic-story/stories/AIDD-S*.md`에 저장한다
+   - `docs/stories/<ticket>-S*.md`에 저장한다
 3. AI Consumer Metadata (ADR-016)를 포함한다
 
 ## 완료 조건
