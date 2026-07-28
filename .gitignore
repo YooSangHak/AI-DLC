@@ -1,10 +1,22 @@
 # 제외 폴더
 etc/
 
-# 이 워크스페이스 전용 산출물 (새 프로젝트에서 불필요)
-docs/requirements/
+# 이 워크스페이스 전용 (새 프로젝트에서 불필요)
 docs/verification/
-docs/decisions/
+#
+# ⚠️ docs/requirements/ 와 docs/decisions/ 는 여기서 제외하지 않는다.
+#    - docs/requirements/  : agent-analyst 산출물 → agent-pm·agent-architect 입력
+#    - docs/decisions/     : PT-09 의존성 업데이트 리포트 산출 경로
+#    둘 다 하네스가 읽고 쓰는 경로라 ignore 하면 산출물이 커밋에서 사라진다.
+
+# 워크플로 중간 산출물 (실행 단위 스크래치 — 로컬 감사 추적용)
+# 아키텍처 §10.4. run_id 단위로 무한 증식하므로 git 추적 대상이 아니다.
+_workspace/
+
+# 런타임 텔레메트리 (훅 이벤트·비용 로그)
+# 세션마다 갱신되어 diff 노이즈가 된다. 사내 lakehouse 적재가 정식 경로다.
+.aidd/events/
+.aidd/KILL_SWITCH
 
 # Python
 __pycache__/
