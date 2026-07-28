@@ -14,13 +14,20 @@ LIMIT="${AIDD_LOC_LIMIT:-300}"
 MSG_FILE="${1:-}"
 LOG_DIR="${AIDD_LOG_DIR:-.aidd/events}"
 
-# 계산 대상은 "코드"만. 300 LOC 한도는 AI가 한 번에 생성하는 코드량을
-# 사람이 리뷰 가능한 범위로 묶기 위한 규칙이므로, 문서·설계서·락파일처럼
+# 계산 대상은 "코드"만. 300 LOC 한도는 AI가 한 번에 생성하는 산출물을
+# 사람이 리뷰 가능한 범위로 묶기 위한 규칙이므로, 설계 문서·락파일처럼
 # 리뷰 부담 성격이 다른 파일은 제외한다.
+#
+# ⚠️ 확장자(*.md)로 일괄 제외하지 않는다. .claude/skills/·.claude/agents/ 의
+#    마크다운은 문서가 아니라 하네스 로직 본체이므로 반드시 계산에 포함한다.
+#    (이 리포는 자산 대부분이 .md 라 확장자 제외 시 규칙이 통째로 무력화된다)
+#    제외는 경로 기준으로만 한다. glob 매직은 `*` 가 `/` 를 넘지 않게 해
+#    루트의 README.md 만 빠지고 하위 디렉터리 .md 는 포함되도록 만든다.
 EXCLUDES=(
   ':(exclude)docs/**'
-  ':(exclude)*.md'
+  ':(exclude)templates/**'
   ':(exclude).claude/prompts/**'
+  ':(exclude,glob)*.md'
   ':(exclude)*.lock'
   ':(exclude)*-lock.json'
   ':(exclude)pnpm-lock.yaml'
