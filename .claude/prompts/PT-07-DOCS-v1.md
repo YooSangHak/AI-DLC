@@ -2,7 +2,7 @@
 id: PT-07-DOCS-v1
 purpose: 코드·API 문서화
 subagent: 공통
-model_hint: Sonnet 4.6
+model_hint: Sonnet 5
 inputs:
   - 구현 코드 또는 API spec
   - 문서화 대상 (module | api | architecture)

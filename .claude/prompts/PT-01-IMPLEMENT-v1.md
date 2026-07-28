@@ -2,7 +2,7 @@
 id: PT-01-IMPLEMENT-v1
 purpose: Story AC 기반 코드 구현
 subagent: agent-dev
-model_hint: Sonnet 4.6 (Py/TS) / GPT-5 (Java)
+model_hint: Sonnet 5 (Py/TS) / GPT-5 (Java)
 inputs:
   - Story 파일 (doc/epic-story/stories/<ID>.md)
   - ADR (docs/adr/*.md)

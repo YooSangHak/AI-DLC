@@ -4,7 +4,7 @@ description: |
   💻 개발자 에이전트. test-first 원칙으로 코드 구현·버그 수정·리팩터링. ADR·Spec을 따라
   정확한 구현. "구현", "코드 작성", "버그 수정", "/agent-dev", "리팩터링", "기능 추가",
   "함수 만들어" 요청 시 트리거. 후속: 구현 수정, 이어서 구현, 코드 개선.
-model: claude-sonnet-4-6
+model: claude-sonnet-5
 tools:
   - Read
   - Write

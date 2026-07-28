@@ -43,7 +43,7 @@ jobs:
         run: |
           DIFF=$(head -500 pr.diff)
           jq -n --arg diff "$DIFF" '{
-            model: "claude-haiku-4-5-20251001",
+            model: "claude-haiku-4-5",
             max_tokens: 2048,
             system: "You are a code reviewer. Follow .claude/skills/agent-reviewer/SKILL.md Blind Hunter phase. Be concise.",
             messages: [{
@@ -72,7 +72,7 @@ jobs:
         run: |
           DIFF=$(head -800 pr.diff)
           jq -n --arg title "$PR_TITLE" --arg body "$PR_BODY" --arg diff "$DIFF" '{
-            model: "claude-sonnet-4-6",
+            model: "claude-sonnet-5",
             max_tokens: 3000,
             system: "You are an adversarial code reviewer. Perform Edge Case Hunter and Acceptance Auditor phases per .claude/skills/agent-reviewer/SKILL.md. Use Korean for output.",
             messages: [{
@@ -112,7 +112,7 @@ jobs:
               '',
               '---',
               '',
-              '### Phase 2+3: Edge Case + Acceptance Auditor (Sonnet 4.6 — 심화)',
+              '### Phase 2+3: Edge Case + Acceptance Auditor (Sonnet 5 — 심화)',
               read('sonnet-review.md'),
               '',
               '---',

@@ -61,7 +61,7 @@ _workspace_*/
   "workflow_run_id": "<uuid>",
   "step_id": "workflow-dev-story/step-02",
   "agent": "agent-dev",
-  "model": "claude-sonnet-4-6",
+  "model": "claude-sonnet-5",
   "result": "success",
   "detail": {}
 }

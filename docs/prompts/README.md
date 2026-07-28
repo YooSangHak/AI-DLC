@@ -8,13 +8,13 @@
 
 | PT | 파일명 | 목적 | 담당 Agent | 모델 | 입력 | 출력 | HITL |
 |---|---|---|---|---|---|---|---|
-| PT-01 | `PT-01-IMPLEMENT-v1.md` | Story AC 기반 코드 구현 | agent-dev | Sonnet 4.6 / GPT-5(Java) | Design + Spec + Story | `src/` 코드 diff | L1 |
-| PT-03 | `PT-03-REVIEWER-v1.md` | PR diff 코드 리뷰 | agent-reviewer | Haiku 4.5 + Sonnet 4.6 | PR diff | 리뷰 comment | L2 |
+| PT-01 | `PT-01-IMPLEMENT-v1.md` | Story AC 기반 코드 구현 | agent-dev | Sonnet 5 / GPT-5(Java) | Design + Spec + Story | `src/` 코드 diff | L1 |
+| PT-03 | `PT-03-REVIEWER-v1.md` | PR diff 코드 리뷰 | agent-reviewer | Haiku 4.5 + Sonnet 5 | PR diff | 리뷰 comment | L2 |
 | PT-05 | `PT-05-LEGACY-UNDERSTAND-v1.md` | 레거시 코드 이해·문서화 | 공통 | Gemini 2.5 Pro (2M) | 레거시 코드 | 요약·구조 문서 | L1 |
-| PT-06 | `PT-06-TEST-ADD-v1.md` | 테스트 코드 생성 | agent-qa | Sonnet 4.6 | 구현 코드 | `tests/` 테스트 | L1 |
-| PT-07 | `PT-07-DOCS-v1.md` | 코드·API 문서화 | 공통 | Sonnet 4.6 | 코드 / API spec | Markdown 문서 | L1 |
-| PT-09 | `PT-09-DEPS-UPDATE-v1.md` | 의존성 업데이트 제안 | 공통 | Sonnet 4.6 | deps lockfile | 업데이트 제안·공급망 체크 | L2 |
-| PT-11 | `PT-11-DESIGN-v1.md` | ADR·API 설계 결정 | agent-architect | Opus 4.7 + GPT-5 교차 | Spec | ADR + Mermaid 다이어그램 | L2 |
+| PT-06 | `PT-06-TEST-ADD-v1.md` | 테스트 코드 생성 | agent-qa | Sonnet 5 | 구현 코드 | `tests/` 테스트 | L1 |
+| PT-07 | `PT-07-DOCS-v1.md` | 코드·API 문서화 | 공통 | Sonnet 5 | 코드 / API spec | Markdown 문서 | L1 |
+| PT-09 | `PT-09-DEPS-UPDATE-v1.md` | 의존성 업데이트 제안 | 공통 | Sonnet 5 | deps lockfile | 업데이트 제안·공급망 체크 | L2 |
+| PT-11 | `PT-11-DESIGN-v1.md` | ADR·API 설계 결정 | agent-architect | Opus 5 + GPT-5 교차 | Spec | ADR + Mermaid 다이어그램 | L2 |
 
 ## Workflow 참조 매핑
 

@@ -21,8 +21,8 @@ PR diff를 3단계 적대적 관점에서 검토하여 버그·보안·AC 미충
 | Step | 파일 | 관점 | 모델 |
 |---|---|---|---|
 | 1 | `steps/step-01-blind-hunter.md` | 힌트 없이 버그 탐색 | Haiku 4.5 |
-| 2 | `steps/step-02-edge-case-hunter.md` | 경계 조건 탐지 | Sonnet 4.6 |
-| 3 | `steps/step-03-acceptance-auditor.md` | AC 충족 검증 | Sonnet 4.6 |
+| 2 | `steps/step-02-edge-case-hunter.md` | 경계 조건 탐지 | Sonnet 5 |
+| 3 | `steps/step-03-acceptance-auditor.md` | AC 충족 검증 | Sonnet 5 |
 
 ## Input
 - PR diff

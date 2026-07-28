@@ -4,7 +4,7 @@ description: |
   📋 PM 에이전트. PRD·Epic·Story 작성, 우선순위 결정, Jobs-to-be-Done 기반 가치 검증.
   "PRD 작성", "Story 분해", "Epic 나눠", "PM과 이야기", "/agent-pm", "우선순위",
   "스토리 쪼개" 요청 시 트리거. 후속: PRD 수정, Story 재분해, 우선순위 재조정.
-model: claude-sonnet-4-6
+model: claude-sonnet-5
 tools:
   - Read
   - Write

@@ -243,14 +243,14 @@ Agent도 Skill 파일로 존재하지만, 일반적으로 **Workflow가 호출**
 
 | # | 이름 (슬래시 명령) | 역할 | 주 모델 | Story |
 |---|---|---|---|---|
-| A1 | `/agent-analyst` | 🔍 분석가 | Sonnet 4.6 | S020 |
-| A2 | `/agent-pm` | 📋 PM | Sonnet 4.6 | S020 |
-| A3 | `/agent-architect` | 🏗️ 아키텍트 | Opus 4.7 + GPT-5 교차 | S020 |
-| A4 | `/agent-dev` | 💻 개발자 | Sonnet 4.6 (Py/TS) / GPT-5 (Java) | S020 |
-| A5 | `/agent-qa` | 🧪 QA | Sonnet 4.6 / GPT-5 | S020 |
-| A6 | `/agent-reviewer` | 🔎 리뷰어 | Haiku 4.5 (diff) + Sonnet 4.6 (심화) | S020 |
-| A7 | `/agent-deployer` | 🚀 배포 담당 | Haiku 4.5 / Sonnet 4.6 | S020 |
-| A8 ⭐ | `/agent-janitor` | 🧹 청소부 (docs-code 정합성·규칙 위반·dead code) | Haiku 4.5 (주간) + Sonnet 4.6 (수정 제안) | **S047** |
+| A1 | `/agent-analyst` | 🔍 분석가 | Sonnet 5 | S020 |
+| A2 | `/agent-pm` | 📋 PM | Sonnet 5 | S020 |
+| A3 | `/agent-architect` | 🏗️ 아키텍트 | Opus 5 + GPT-5 교차 | S020 |
+| A4 | `/agent-dev` | 💻 개발자 | Sonnet 5 (Py/TS) / GPT-5 (Java) | S020 |
+| A5 | `/agent-qa` | 🧪 QA | Sonnet 5 / GPT-5 | S020 |
+| A6 | `/agent-reviewer` | 🔎 리뷰어 | Haiku 4.5 (diff) + Sonnet 5 (심화) | S020 |
+| A7 | `/agent-deployer` | 🚀 배포 담당 | Haiku 4.5 / Sonnet 5 | S020 |
+| A8 ⭐ | `/agent-janitor` | 🧹 청소부 (docs-code 정합성·규칙 위반·dead code) | Haiku 4.5 (주간) + Sonnet 5 (수정 제안) | **S047** |
 
 #### L5 Prompt (7종, `.claude/prompts/` 별도)
 
@@ -577,14 +577,14 @@ Workflow step은 **PT를 로드**해서 사용. PT 파일은 `.claude/prompts/`�
 
 | Agent | 역할 | 아이콘 | 주 책임 | 주 모델 |
 |---|---|---|---|---|
-| `agent-analyst` | 분석가 | 🔍 | 요구 분석, Jira 티켓 → 요구사항 정의서 | Sonnet 4.6 |
-| `agent-pm` | PM | 📋 | PRD 작성, Epic/Story 분해, 우선순위 | Sonnet 4.6 |
-| `agent-architect` | 아키텍트 | 🏗️ | ADR·API·Mermaid, 설계 결정 | Opus 4.7 + GPT-5 교차 |
-| `agent-dev` | 개발자 | 💻 | 구현, 커밋 | Sonnet 4.6 (Py/TS) / GPT-5 (Java) |
-| `agent-qa` | QA | 🧪 | dev TDD 이후 2차 방어선 — property-based·mutation·경계면 교차 비교 | Sonnet 4.6 / GPT-5 |
-| `agent-reviewer` | 리뷰어 | 🔎 | PR 리뷰, Blind Hunter·Edge Case·Acceptance | Haiku 4.5 (diff) + Sonnet 4.6 (심화) |
-| `agent-deployer` | 배포 담당 | 🚀 | 릴리즈, canary, GitOps | Haiku 4.5 / Sonnet 4.6 |
-| **`agent-janitor`** ⭐ | **청소부** | 🧹 | **docs-code 정합성·규칙 위반·dead code 주기 감사·진화 트리거** (ADR-021, 기둥3) | Haiku 4.5 (감사) + Sonnet 4.6 (수정 제안) |
+| `agent-analyst` | 분석가 | 🔍 | 요구 분석, Jira 티켓 → 요구사항 정의서 | Sonnet 5 |
+| `agent-pm` | PM | 📋 | PRD 작성, Epic/Story 분해, 우선순위 | Sonnet 5 |
+| `agent-architect` | 아키텍트 | 🏗️ | ADR·API·Mermaid, 설계 결정 | Opus 5 + GPT-5 교차 |
+| `agent-dev` | 개발자 | 💻 | 구현, 커밋 | Sonnet 5 (Py/TS) / GPT-5 (Java) |
+| `agent-qa` | QA | 🧪 | dev TDD 이후 2차 방어선 — property-based·mutation·경계면 교차 비교 | Sonnet 5 / GPT-5 |
+| `agent-reviewer` | 리뷰어 | 🔎 | PR 리뷰, Blind Hunter·Edge Case·Acceptance | Haiku 4.5 (diff) + Sonnet 5 (심화) |
+| `agent-deployer` | 배포 담당 | 🚀 | 릴리즈, canary, GitOps | Haiku 4.5 / Sonnet 5 |
+| **`agent-janitor`** ⭐ | **청소부** | 🧹 | **docs-code 정합성·규칙 위반·dead code 주기 감사·진화 트리거** (ADR-021, 기둥3) | Haiku 4.5 (감사) + Sonnet 5 (수정 제안) |
 
 ### 6.2 Agent 파일 구조 (BMAD 방식)
 
@@ -810,7 +810,7 @@ step_id: workflow-dev-story/step-02-implement
 # 기존 필드
 interaction_kind: iterative
 prompt_template_id: PT-01-IMPLEMENT-v1
-model: claude-sonnet-4-6
+model: claude-sonnet-5
 model_provider: anthropic
 outcome: accepted
 accept_at: 2026-05-15T14:45:00Z
@@ -981,15 +981,15 @@ flowchart LR
 
 | Agent / Step | 주 모델 | 교차 검증 | 근거 |
 |---|---|---|---|
-| agent-analyst | Sonnet 4.6 | — | §3 #1 |
-| agent-pm | Sonnet 4.6 | — | (PM은 PDF §3에 없음, 사내 추가 역할) |
-| agent-architect | Opus 4.7 | GPT-5 | §3 #3 (교차) |
-| agent-dev (Py/TS) | Sonnet 4.6 | — | §4.1 (Claude Code · Cursor) |
+| agent-analyst | Sonnet 5 | — | §3 #1 |
+| agent-pm | Sonnet 5 | — | (PM은 PDF §3에 없음, 사내 추가 역할) |
+| agent-architect | Opus 5 | GPT-5 | §3 #3 (교차) |
+| agent-dev (Py/TS) | Sonnet 5 | — | §4.1 (Claude Code · Cursor) |
 | agent-dev (Java) | GPT-5 | — | §4.1 (**IntelliJ Copilot** 우선, Claude Code 병행) |
-| agent-qa | Sonnet 4.6 / GPT-5 | — | §3 #5 |
+| agent-qa | Sonnet 5 / GPT-5 | — | §3 #5 |
 | agent-reviewer (diff) | Haiku 4.5 | — | §3 #6 |
-| agent-reviewer (심화) | Sonnet 4.6 | Copilot | §3 #6 + 팀 모드 |
-| agent-deployer | Haiku 4.5 / Sonnet 4.6 | — | §3 #7 |
+| agent-reviewer (심화) | Sonnet 5 | Copilot | §3 #6 + 팀 모드 |
+| agent-deployer | Haiku 4.5 / Sonnet 5 | — | §3 #7 |
 | PT-05 Legacy | Gemini 2.5 Pro (2M) | — | §5.6 |
 
 ### 14.2 컨텍스트 예산 (§5.6)
@@ -997,7 +997,7 @@ flowchart LR
 | 모드 | 설정 | 용도 |
 |---|---|---|
 | 기본 세션 | 200k 토큰 | 일반 개발 |
-| 장기 리팩터링 | Opus 4.7 (1M mode), 상한 **600k** | 복잡 사고 |
+| 장기 리팩터링 | Opus 5 (1M mode), 상한 **600k** | 복잡 사고 |
 | Legacy 이해 | Gemini 2.5 Pro (2M) | **PT-05만** |
 
 ---
@@ -1179,7 +1179,7 @@ Claude Code Hooks / Git pre-commit / GitHub Actions 3개 위치 병행 (심층 �
   - 결과 → CLAUDE.md 변경 이력에 기록 → 규칙 추가 제안
 - **대안 검토**: (b) 기존 Agent 역할 흡수 / (c) Agent 아닌 cron 스크립트
 - **채택 이유 (a)**: (1) 책임 분리 명확 (2) "주기적 청소 Agent" OpenAI 블로그 기둥3 충실 (3) HITL L1 자동 진행 + 규칙 추가는 L2 승인
-- **모델**: Haiku 4.5 (감사) + Sonnet 4.6 (수정 제안 생성)
+- **모델**: Haiku 4.5 (감사) + Sonnet 5 (수정 제안 생성)
 - **진화 트리거**: janitor 발견 → 새 규칙 → 하네스 진화 루프 (ADR-015와 연계)
 - **영향**: Agent 7종 → 8종. 관련 Story [S047](epic-story/stories/AIDD-S047_agent-janitor.md).
 

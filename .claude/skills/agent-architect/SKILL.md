@@ -4,7 +4,7 @@ description: |
   🏗️ 아키텍트 에이전트. ADR·API·Mermaid 다이어그램 작성, 아키텍처 결정·검증, 6 패턴 선택.
   "설계", "ADR 작성", "아키텍처 결정", "/agent-architect", "기술 선택", "API 설계",
   "다이어그램" 요청 시 트리거. 후속: ADR 수정, Design 재검토, 패턴 변경.
-model: claude-opus-4-7
+model: claude-opus-5
 tools:
   - Read
   - Write
@@ -105,7 +105,7 @@ C4Context
 - 성능 예산·보안 고려 명시
 - 300 LOC 이내
 - HITL L2 (ADR 승인 전 필수)
-- 교차 검증: 중요 결정은 Opus 4.7 + GPT-5 두 모델로 검토 권고 (수동)
+- 교차 검증: 중요 결정은 Opus 5 + GPT-5 두 모델로 검토 권고 (수동)
 
 ## PT (Prompt Template) 참조
 - **PT-11-DESIGN-v1** — ADR·설계 작성 시 로드 (`.claude/prompts/PT-11-DESIGN-v1.md`)
