@@ -407,7 +407,7 @@ _workspace/                                  # 오케스트레이터 중간 산�
 
 | 파일 유형 경로 패턴 | 인식 | 진입 단계 |
 |---|---|---|
-| `doc/epic-story/stories/AIDD-S*.md` | Story | Story의 AC·Implementation Steps 기반 workflow 호출 |
+| `docs/stories/AIDD-S*.md` | Story | Story의 AC·Implementation Steps 기반 workflow 호출 |
 | `docs/requirements/<ticket>.md` | 요구사항 | 요구 분석 스킵 → Spec 단계부터 |
 | `docs/adr/*.md` | ADR | Design 완료 인식 → Implement부터 |
 | `docs/specs/*.md` | Spec | Design 단계부터 |

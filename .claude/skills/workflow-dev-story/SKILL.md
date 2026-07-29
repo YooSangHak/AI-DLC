@@ -13,7 +13,7 @@ allowed-tools: Read Write Edit Grep Glob Bash(git *) Bash(uv *) Bash(pnpm *) Bas
 Story의 AC를 기반으로 test-first 원칙에 따라 구현·테스트·문서화·검증을 5단계로 수행한다.
 
 ## Phase 0: 기존 자료 감사 (필수)
-1. Story 파일 존재 확인 (`doc/epic-story/stories/<ID>.md`)
+1. Story 파일 존재 확인 (`docs/stories/<ID>.md`)
 2. 관련 ADR 존재 확인 (`docs/adr/*.md`)
 3. `src/` 기존 구현 여부 확인 (`git log --oneline feature/<ID>*`)
 4. 사용자에게 상태 보고:
@@ -32,7 +32,7 @@ Story의 AC를 기반으로 test-first 원칙에 따라 구현·테스트·문�
 | 5 | `steps/step-05-self-check.md` | agent-dev | — |
 
 ## Input
-- Story 파일 (`doc/epic-story/stories/<ID>.md`)
+- Story 파일 (`docs/stories/<ID>.md`)
 - ADR (`docs/adr/*.md`)
 - CLAUDE.md (Stack·Conventions)
 
