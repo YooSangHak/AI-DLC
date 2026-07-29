@@ -20,11 +20,13 @@ repos:
   # --- FR-8.3: 300 LOC 초과 차단 ---
   - repo: local
     hooks:
+      # commit-msg 단계에서 실행한다 — 커밋 메시지의 loc_ok 우회 태그를
+      # 읽어야 하므로 pre-commit 단계(메시지 미확정)에서는 동작할 수 없다.
       - id: check-diff-size
-        name: "[FR-8.3] 300 LOC 초과 차단"
+        name: "[FR-8.3] 300 LOC 초과 차단 (loc_ok 로 우회)"
         language: script
         entry: .claude/hooks/check-diff-size.sh
-        pass_filenames: false
+        stages: [commit-msg]
         always_run: true
 
       - id: no-env-files

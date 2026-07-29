@@ -6,7 +6,7 @@ description: |
   Property-based·Mutation·경계면 교차 비교 집중.
   "QA", "/agent-qa", "2차 검증", "mutation 테스트", "커버리지 갭", "경계면 교차",
   "테스트 보완" 요청 시 트리거. 후속: 추가 시나리오, 재검증.
-model: claude-sonnet-4-6
+model: claude-sonnet-5
 tools:
   - Read
   - Write

@@ -25,7 +25,7 @@
 
 | 경로 패턴 | 유형 | 진입 단계 |
 |---|---|---|
-| `doc/epic-story/stories/AIDD-S*.md` | **Story** | `workflow-dev-story` (Implementation Steps 파싱) |
+| `docs/stories/AIDD-S*.md` | **Story** | `workflow-dev-story` (Implementation Steps 파싱) |
 | `docs/requirements/*.md` | 요구사항 | Spec 단계부터 |
 | `docs/adr/*.md` | ADR | Implement 단계부터 |
 | `docs/specs/*.md` | Spec | Design 단계부터 |

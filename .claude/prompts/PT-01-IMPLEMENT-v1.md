@@ -2,9 +2,9 @@
 id: PT-01-IMPLEMENT-v1
 purpose: Story AC 기반 코드 구현
 subagent: agent-dev
-model_hint: Sonnet 4.6 (Py/TS) / GPT-5 (Java)
+model_hint: Sonnet 5 (Py/TS) / GPT-5 (Java)
 inputs:
-  - Story 파일 (doc/epic-story/stories/<ID>.md)
+  - Story 파일 (docs/stories/<ID>.md)
   - ADR (docs/adr/*.md)
   - 기존 src/ 유사 모듈
 outputs:
@@ -20,7 +20,7 @@ automation_tier: high
 Story의 Acceptance Criteria를 기반으로 test-first 원칙에 따라 코드를 구현한다.
 
 ## 전제 조건
-- Story 파일 존재 (`doc/epic-story/stories/<ID>.md`)
+- Story 파일 존재 (`docs/stories/<ID>.md`)
 - 관련 ADR 존재 (`docs/adr/*.md`)
 - CLAUDE.md Stack·Conventions 숙지
 

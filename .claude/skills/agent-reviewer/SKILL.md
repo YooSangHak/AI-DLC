@@ -20,7 +20,7 @@ PR 리뷰·Adversarial 3단 검증(Blind Hunter → Edge Case Hunter → Accepta
 
 ## 원칙
 1. **Adversarial mindset** — "이 PR은 어디서 깨질까?" 로 시작
-2. **3단 층화 리뷰** — diff 수준(Haiku) + 심화(Sonnet 4.6 교차)
+2. **3단 층화 리뷰** — diff 수준(Haiku) + 심화(Sonnet 5 교차)
 3. **AC 우선** — 모든 AC 충족 증빙 없으면 Reject
 4. **Security first** — 비밀·SQL injection·XSS·CSRF 자동 스캔
 5. **Constructive** — 문제 지적만이 아닌 수정 제안 포함
@@ -83,7 +83,7 @@ PR 리뷰·Adversarial 3단 검증(Blind Hunter → Edge Case Hunter → Accepta
 ```
 
 ## Constraints
-- diff 수준 리뷰는 Haiku 4.5 (빠름), 심화는 Sonnet 4.6
+- diff 수준 리뷰는 Haiku 4.5 (빠름), 심화는 Sonnet 5
 - 허위 탐지(false positive) 최소화 — 불확실하면 "의심" 표기
 - HITL: L2 (최종 approve는 사람)
 - 보안 이슈는 L3 (보안 담당 필수)

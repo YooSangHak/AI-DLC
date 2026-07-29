@@ -5,7 +5,7 @@ description: |
   "요구 분석", "요구사항 정리", "분석가와 이야기", "티켓 분석", "이 기능 뭐가 필요한지",
   "/agent-analyst", "기획 지원" 요청 시 트리거. 후속 작업 키워드: 재분석, 보완, 이어서 분석,
   이전 요구사항 업데이트.
-model: claude-sonnet-4-6
+model: claude-sonnet-5
 tools:
   - Read
   - Write

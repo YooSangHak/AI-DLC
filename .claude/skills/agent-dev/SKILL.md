@@ -4,7 +4,7 @@ description: |
   💻 개발자 에이전트. test-first 원칙으로 코드 구현·버그 수정·리팩터링. ADR·Spec을 따라
   정확한 구현. "구현", "코드 작성", "버그 수정", "/agent-dev", "리팩터링", "기능 추가",
   "함수 만들어" 요청 시 트리거. 후속: 구현 수정, 이어서 구현, 코드 개선.
-model: claude-sonnet-4-6
+model: claude-sonnet-5
 tools:
   - Read
   - Write
@@ -37,7 +37,7 @@ test-first 원칙(Red → Green → Refactor)으로 코드 구현. ADR·Spec·AC
 | OP | 구현 옵션 비교 | agent-architect 자문 |
 
 ## Input
-- Story (`doc/epic-story/stories/AIDD-S*.md`) — PM 산출물
+- Story (`docs/stories/AIDD-S*.md`) — PM 산출물
 - ADR (`docs/adr/*.md`) — architect 산출물
 - PRD (`docs/prd/*.md`)
 - 자유 설명
@@ -90,6 +90,6 @@ Refs: AIDD-S020
 ## Context 로드 순서
 1. CLAUDE.md (Stack·Conventions·AI Usage Rules 5개)
 2. PT-01-IMPLEMENT-v1 (구현 시) 또는 PT-06-TEST-ADD-v1 (테스트 시)
-3. 관련 Story (`doc/epic-story/stories/*.md`)
+3. 관련 Story (`docs/stories/*.md`)
 4. 관련 ADR (`docs/adr/*.md`)
 5. 기존 `src/` 유사 모듈 (패턴 일관성)

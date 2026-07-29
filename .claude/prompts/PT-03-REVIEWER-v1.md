@@ -2,7 +2,7 @@
 id: PT-03-REVIEWER-v1
 purpose: PR diff 코드 리뷰 (Blind Hunter → Edge Case → Acceptance)
 subagent: agent-reviewer
-model_hint: Haiku 4.5 (diff 수준) + Sonnet 4.6 (심화)
+model_hint: Haiku 4.5 (diff 수준) + Sonnet 5 (심화)
 inputs:
   - PR diff
   - Story AC 목록
@@ -38,7 +38,7 @@ Story AC: {ac_list}
 3. 300 LOC 초과 여부 확인
 4. 비밀·PII 노출 여부 확인
 
-### Phase 2: Edge Case Hunter (Sonnet 4.6)
+### Phase 2: Edge Case Hunter (Sonnet 5)
 1. 경계값·null·빈 컬렉션·타임아웃 처리 확인
 2. 동시성 이슈 탐색
 3. 오류 처리 누락 확인

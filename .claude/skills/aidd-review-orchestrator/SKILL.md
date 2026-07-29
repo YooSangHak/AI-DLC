@@ -33,7 +33,7 @@ TeamCreate:
 
     - name: reviewer-deep
       agent_type: general-purpose
-      model: claude-sonnet-4-6
+      model: claude-sonnet-5
       prompt: |
         심화 리뷰. code-review-adversarial Skill 로드.
         PT-03-REVIEWER-v1 Phase 2(Edge Case Hunter) + Phase 3(Acceptance Auditor) 수행.
@@ -41,7 +41,7 @@ TeamCreate:
 
     - name: qa-boundary
       agent_type: general-purpose
-      model: claude-sonnet-4-6
+      model: claude-sonnet-5
       prompt: |
         경계면 교차 테스트 검증 (Harness QA 가이드).
         테스트 커버리지 적절성, 누락된 경계값 케이스 확인.
@@ -49,7 +49,7 @@ TeamCreate:
 
     - name: security
       agent_type: general-purpose
-      model: claude-sonnet-4-6
+      model: claude-sonnet-5
       prompt: |
         security-review Skill 로드하여 보안 취약점 스캔.
         OWASP LLM Top 10 기준 검토.

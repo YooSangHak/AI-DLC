@@ -2,7 +2,7 @@
 id: PT-06-TEST-ADD-v1
 purpose: 구현 코드 기반 테스트 코드 생성
 subagent: agent-qa
-model_hint: Sonnet 4.6
+model_hint: Sonnet 5
 inputs:
   - 구현 코드 (src/<module>/<feature>.py 또는 .ts)
   - Story AC 목록

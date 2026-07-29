@@ -4,7 +4,7 @@
 Story AC를 기반으로 test-first 원칙에 따라 구현·테스트·문서화를 수행하고 PR을 생성한다.
 
 ## 전제 조건
-- [ ] Story 파일 존재 (`doc/epic-story/stories/<ID>.md`)
+- [ ] Story 파일 존재 (`docs/stories/<ID>.md`)
 - [ ] ADR 존재 또는 설계 결정 명확 (`docs/adr/*.md`)
 - [ ] CLAUDE.md Stack·Conventions 숙지
 

@@ -2,7 +2,7 @@
 id: PT-11-DESIGN-v1
 purpose: ADR·API 설계 결정 문서화
 subagent: agent-architect
-model_hint: Opus 4.7 + GPT-5 교차 검증
+model_hint: Opus 5 + GPT-5 교차 검증
 inputs:
   - Spec (docs/specs/<feature>.md)
   - 기존 ADR (docs/adr/*.md)
@@ -18,7 +18,7 @@ automation_tier: medium
 
 ## 목적
 Spec을 기반으로 아키텍처 결정을 내리고 ADR과 설계 상세 문서를 작성한다.
-Opus 4.7과 GPT-5 교차 검증으로 설계 품질을 높인다.
+Opus 5과 GPT-5 교차 검증으로 설계 품질을 높인다.
 
 ## 전제 조건
 - Spec 존재 (`docs/specs/<feature>.md`)

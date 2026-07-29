@@ -11,7 +11,7 @@ purpose: <한 줄 목적>
 subagent: <호출 대상 Agent>
 # agent-dev | agent-qa | agent-architect | agent-reviewer | 공통
 model_hint: <권장 모델>
-# Sonnet 4.6 | Opus 4.7 | Haiku 4.5 | Gemini 2.5 Pro
+# Sonnet 5 | Opus 5 | Haiku 4.5 | Gemini 2.5 Pro
 inputs:
   - <입력 변수 1>
   - <입력 변수 2>

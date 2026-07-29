@@ -5,8 +5,8 @@ description: |
   <!-- 역할 한 줄 설명. Claude가 언제 이 Agent를 활성화할지 판단에 사용 -->
   <!-- "pushy"하게: 구체 상황·키워드·후속 트리거 포함 -->
   <!-- 예: 💻 개발자 에이전트. "구현", "코드 작성", "버그 수정", "/agent-dev" 요청 시 트리거 -->
-model: claude-sonnet-4-6
-# agent-architect: opus-4-7 / agent-reviewer(diff): haiku-4-5
+model: claude-sonnet-5
+# agent-architect: claude-opus-5 / agent-reviewer(diff): claude-haiku-4-5
 allowed-tools: Read Write Edit Grep Glob Bash(git *)
 ---
 

@@ -21,30 +21,52 @@ jobs:
 
       - name: "[FR-8.7] Anthropic API 비용 조회"
         id: cost
-        run: |
-          # Anthropic Usage API (2026 기준)
-          RESPONSE=$(curl -sf \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            "https://api.anthropic.com/v1/organizations/usage?period=current_month" \
-            || echo '{"total_cost_usd": 0}')
-
-          TOTAL=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('total_cost_usd', 0))")
-          echo "monthly_cost=${TOTAL}" >> $GITHUB_OUTPUT
-          echo "Monthly AI cost: \$${TOTAL}"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        continue-on-error: true
-
-      - name: "[FR-8.7] 월 한도 초과 확인"
         run: |
-          MONTHLY_LIMIT="${{ vars.AIDD_MONTHLY_COST_LIMIT_USD || '500' }}"
-          CURRENT="${{ steps.cost.outputs.monthly_cost || '0' }}"
+          # ⚠️ 조회 실패 시 0을 채우지 않는다.
+          #    이전 구현은 실패하면 total_cost_usd=0 으로 폴백해 "✅ 비용 정상 범위"를
+          #    보고했다 — 아무것도 측정하지 않으면서 건강하다고 말하는 상태였다.
+          #    측정 불가는 '정상'이 아니라 'unknown' 으로 명시한다.
+          if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "⏭️ ANTHROPIC_API_KEY 미등록 — 월간 비용 감시 비활성"
+            echo "   세션 단위 비용 가드는 .claude/hooks/pre-tool.sh 가 로컬에서 담당한다."
+            echo "status=skipped" >> $GITHUB_OUTPUT
+            exit 0
+          fi
 
+          if RESPONSE=$(curl -sS --fail-with-body \
+               -H "x-api-key: $ANTHROPIC_API_KEY" \
+               -H "anthropic-version: 2023-06-01" \
+               "https://api.anthropic.com/v1/organizations/usage?period=current_month"); then
+            TOTAL=$(printf '%s' "$RESPONSE" | python3 -c \
+              "import sys,json; print(json.load(sys.stdin).get('total_cost_usd', 0))" 2>/dev/null) || TOTAL=""
+          else
+            TOTAL=""
+          fi
+
+          if [ -z "$TOTAL" ]; then
+            echo "⚠️ Usage API 조회 실패 — 이번 주기 비용 판정 불가 (unknown)"
+            echo "status=unknown" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "monthly_cost=${TOTAL}" >> $GITHUB_OUTPUT
+          echo "status=ok" >> $GITHUB_OUTPUT
+          echo "Monthly AI cost: \$${TOTAL}"
+
+      # 비용을 실제로 조회한 경우에만 판정한다.
+      # skipped/unknown 상태에서 판정하면 0을 정상으로 오인하게 된다.
+      - name: "[FR-8.7] 월 한도 초과 확인"
+        if: steps.cost.outputs.status == 'ok'
+        env:
+          MONTHLY_COST: ${{ steps.cost.outputs.monthly_cost }}
+          MONTHLY_LIMIT: ${{ vars.AIDD_MONTHLY_COST_LIMIT_USD || '500' }}
+        run: |
           python3 << 'EOF'
-          import sys
-          current = float("${{ steps.cost.outputs.monthly_cost || '0' }}")
-          limit = float("${{ vars.AIDD_MONTHLY_COST_LIMIT_USD || '500' }}")
+          import os, sys
+          current = float(os.environ.get("MONTHLY_COST") or 0)
+          limit = float(os.environ.get("MONTHLY_LIMIT") or 500)
           ratio = current / limit if limit > 0 else 0
 
           print(f"Monthly cost: ${current:.2f} / ${limit:.2f} ({ratio*100:.1f}%)")

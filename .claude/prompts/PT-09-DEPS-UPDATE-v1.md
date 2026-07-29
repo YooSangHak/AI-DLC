@@ -2,7 +2,7 @@
 id: PT-09-DEPS-UPDATE-v1
 purpose: 의존성 업데이트 분석 및 안전한 업그레이드 제안
 subagent: 공통
-model_hint: Sonnet 4.6
+model_hint: Sonnet 5
 inputs:
   - 의존성 파일 (pyproject.toml | package.json | build.gradle)
   - lockfile (uv.lock | pnpm-lock.yaml)
