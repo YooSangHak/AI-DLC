@@ -14,6 +14,41 @@ env:
 
 jobs:
   # ────────────────────────────────────────
+  # 스택 감지
+  # hashFiles() 는 러너 워크스페이스가 필요해 job 레벨 if: 에서 쓸 수 없다.
+  # 사용 시 GitHub 이 워크플로 검증에서 거부하고, 어떤 job 도 생성되지 않은 채
+  # 0초 만에 실패한다 (실행 이름이 워크플로 name 대신 파일 경로로 표시됨).
+  # 따라서 감지는 별도 job 에서 수행하고 결과만 output 으로 넘긴다.
+  # ────────────────────────────────────────
+  detect:
+    name: "스택 감지"
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.detect.outputs.python }}
+      node: ${{ steps.detect.outputs.node }}
+      java: ${{ steps.detect.outputs.java }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: detect
+        run: |
+          PY=false
+          if [[ -f pyproject.toml || -f setup.py ]] || compgen -G 'requirements*.txt' > /dev/null; then
+            PY=true
+          fi
+          NODE=false
+          [[ -f package.json ]] && NODE=true
+          JAVA=false
+          if [[ -f pom.xml || -f build.gradle || -f build.gradle.kts ]]; then
+            JAVA=true
+          fi
+          echo "python=$PY" >> "$GITHUB_OUTPUT"
+          echo "node=$NODE"  >> "$GITHUB_OUTPUT"
+          echo "java=$JAVA"  >> "$GITHUB_OUTPUT"
+          echo "감지 결과 — python=$PY node=$NODE java=$JAVA"
+        shell: bash
+
+  # ────────────────────────────────────────
   # 공통: diff 크기 + 비밀 스캔 (FR-8.3/8.1)
   # ────────────────────────────────────────
   security-scan:
@@ -53,10 +88,8 @@ jobs:
   python:
     name: "Python — Lint · Type · Security · Test · Mutation"
     runs-on: ubuntu-latest
-    if: |
-      hashFiles('pyproject.toml') != '' ||
-      hashFiles('setup.py') != '' ||
-      hashFiles('requirements*.txt') != ''
+    needs: detect
+    if: needs.detect.outputs.python == 'true'
     steps:
       - uses: actions/checkout@v4
 
@@ -119,7 +152,8 @@ jobs:
   typescript:
     name: "TypeScript — Lint · Type · Security · Test · Mutation"
     runs-on: ubuntu-latest
-    if: hashFiles('package.json') != ''
+    needs: detect
+    if: needs.detect.outputs.node == 'true'
     steps:
       - uses: actions/checkout@v4
 
@@ -176,7 +210,8 @@ jobs:
   java:
     name: "Java — Lint · Type · Security · Test · Mutation (이연)"
     runs-on: ubuntu-latest
-    if: vars.ENABLE_JAVA_CI == 'true' && hashFiles('pom.xml', 'build.gradle') != ''
+    needs: detect
+    if: vars.ENABLE_JAVA_CI == 'true' && needs.detect.outputs.java == 'true'
     steps:
       - uses: actions/checkout@v4
 
