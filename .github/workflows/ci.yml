@@ -75,7 +75,9 @@ jobs:
           echo "✅ diff 크기 OK"
 
       - name: "[FR-8.1] TruffleHog 시크릿 스캔"
-        uses: trufflesecurity/trufflehog@v3
+        # trufflehog 는 v3 같은 메이저 이동 태그를 제공하지 않는다.
+        # 존재하지 않는 ref 를 쓰면 액션 해석 단계에서 job 이 즉시 실패한다.
+        uses: trufflesecurity/trufflehog@v3.96.0
         with:
           path: ./
           base: ${{ github.event.pull_request.base.sha || 'HEAD~1' }}
