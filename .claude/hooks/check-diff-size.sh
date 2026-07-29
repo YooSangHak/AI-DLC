@@ -34,7 +34,15 @@ EXCLUDES=(
   ':(exclude)uv.lock'
 )
 
-count() { git diff --cached --numstat -- "$@" | awk '{add+=$1; del+=$2} END {print add+del+0}'; }
+# 로컬(pre-commit)은 staged diff, CI 는 PR base..head 범위를 본다.
+# AIDD_DIFF_RANGE 가 있으면 그 범위를 쓴다 — 규칙을 한 곳에서만 정의하기 위함.
+count() {
+  if [[ -n "${AIDD_DIFF_RANGE:-}" ]]; then
+    git diff --numstat "$AIDD_DIFF_RANGE" -- "$@"
+  else
+    git diff --cached --numstat -- "$@"
+  fi | awk '{add+=$1; del+=$2} END {print add+del+0}'
+}
 TOTAL=$(count . "${EXCLUDES[@]}")
 TOTAL="${TOTAL:-0}"
 ALL=$(count .)

@@ -59,20 +59,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      # 로컬 pre-commit 과 같은 스크립트를 쓴다 — 제외 경로·loc_ok 우회 규칙이
+      # 두 곳에 중복 정의되면 반드시 갈라진다.
       - name: "[FR-8.3] PR diff 크기 확인 (≤300 LOC)"
         if: github.event_name == 'pull_request'
+        env:
+          AIDD_DIFF_RANGE: "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          LIMIT=300
-          TOTAL=$(git diff --numstat \
-            "${{ github.event.pull_request.base.sha }}" \
-            "${{ github.event.pull_request.head.sha }}" \
-            | awk '{add+=$1; del+=$2} END {print add+del}')
-          echo "PR diff: ${TOTAL:-0} LOC"
-          if [[ "${TOTAL:-0}" -gt "$LIMIT" ]]; then
-            echo "❌ ${TOTAL} LOC > ${LIMIT} LOC 한도 — 커밋 분할 필요"
-            exit 1
-          fi
-          echo "✅ diff 크기 OK"
+          # PR 제목·본문을 loc_ok 판정용 메시지로 넘긴다 (셸 보간 금지 — env 경유)
+          printf '%s\n\n%s\n' "$PR_TITLE" "$PR_BODY" > /tmp/pr-message.txt
+          .claude/hooks/check-diff-size.sh /tmp/pr-message.txt
 
       - name: "[FR-8.1] TruffleHog 시크릿 스캔"
         # trufflehog 는 v3 같은 메이저 이동 태그를 제공하지 않는다.
