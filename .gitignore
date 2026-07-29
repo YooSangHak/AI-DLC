@@ -17,6 +17,8 @@ _workspace/
 # 세션마다 갱신되어 diff 노이즈가 된다. 사내 lakehouse 적재가 정식 경로다.
 .aidd/events/
 .aidd/KILL_SWITCH
+# 머신별 비용 한도 오버라이드 (팀 공용 기본값은 pre-tool.sh 에 둔다)
+.aidd/cost-limit
 
 # Python
 __pycache__/

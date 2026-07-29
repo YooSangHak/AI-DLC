@@ -67,15 +67,24 @@ fi
 # transcript의 토큰 사용량으로 추정한다 — 훅 페이로드에 비용 필드가 없다.
 # 경고를 한도의 비율이 아닌 절대값으로 둔다: 한도가 크면 비율 경고는 너무 늦게 뜬다.
 # ─────────────────────────────────────────────
-COST_LIMIT="${AIDD_COST_LIMIT_USD:-50.00}"
+# 한도 결정 순서: 환경변수 > 로컬 오버라이드 파일 > 기본값
+# 오버라이드 파일(.aidd/cost-limit)은 gitignore 대상이다. 대규모 감사처럼
+# 예외적으로 긴 작업을 할 때 팀 공용 기본값을 건드리지 않고 머신 단위로만 올린다.
+COST_LIMIT="${AIDD_COST_LIMIT_USD:-}"
+LIMIT_FILE="${AIDD_COST_LIMIT_FILE:-.aidd/cost-limit}"
+if [[ -z "$COST_LIMIT" && -f "$LIMIT_FILE" ]]; then
+  COST_LIMIT=$(head -1 "$LIMIT_FILE" 2>/dev/null | tr -dc '0-9.') || COST_LIMIT=""
+fi
+COST_LIMIT="${COST_LIMIT:-50.00}"
 COST_WARN="${AIDD_COST_WARN_USD:-10.00}"
 
-# 자기 수리 예외: 훅 자신을 고치는 작업은 비용 가드를 건너뛴다.
-# 이게 없으면 한도 초과 시 훅을 수정할 방법이 사라져 셸 직접 개입 외에는 복구 불가.
+# 자기 수리 예외: 훅 자신과 훅 설정을 고치는 작업은 비용 가드를 건너뛴다.
+# 이게 없으면 한도 초과 시 훅·한도를 수정할 방법이 사라져 셸 직접 개입 외에는 복구 불가.
 # (수동 Kill-switch는 사람의 명시적 정지 의사이므로 예외를 적용하지 않는다)
 SKIP_COST_GUARD=0
 case "$FILE_PATH" in
   */.claude/hooks/*|.claude/hooks/*) SKIP_COST_GUARD=1 ;;
+  */.aidd/cost-limit|.aidd/cost-limit) SKIP_COST_GUARD=1 ;;
 esac
 
 SESSION_COST=0
