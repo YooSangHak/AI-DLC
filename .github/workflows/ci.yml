@@ -114,9 +114,19 @@ jobs:
         run: uv run bandit -r src/ -ll -x tests/
 
       - name: "[FR-8.4] Safety 의존성 취약점"
+        # 🔴 결함 조치 — `uv run pip install safety` 는 safety 를 **프로젝트 venv 안에**
+        # 설치해, safety 자신의 전이 의존성까지 그 환경에 섞인다. `uv run safety check`
+        # 는 그 환경 전체를 스캔하므로 safety 의 의존성을 "우리 프로젝트 의존성"으로
+        # 오인해 스캔한다 — 실측 사례: 어떤 프로젝트의 pyproject.toml/uv.lock 에도 없는
+        # `nltk`(SFTY-20260902-58666, Path Traversal)가 이 경로로만 들어와 그 버전에
+        # PyPI 상 더 높은 버전이 없을 때 업그레이드로도 피할 수 없는 상시 실패를 만든다.
+        # `uvx` 로 safety 를 격리 실행하고, 스캔 대상을 `uv export` 가 뽑은 **우리 의존성
+        # 목록**(requirements.txt)으로 좁혀 safety 자신의 의존성이 섞이지 않게 한다.
+        # `uv export` 는 `uv.lock` 이 없으면 그 자리에서 lock 을 새로 만들어 내보내므로
+        # lock 유무와 무관하게 동작한다.
         run: |
-          uv run pip install safety
-          uv run safety check --full-report
+          uv export --format requirements-txt --all-extras --no-hashes > /tmp/requirements.txt
+          uvx safety check -r /tmp/requirements.txt --full-report
         continue-on-error: false
 
       - name: "[FR-8.4] Snyk 의존성 취약점"
